@@ -56,14 +56,14 @@ private fun BottomNavItemView(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() }
-            .padding(vertical = 8.dp),                       // ← ИЗМЕНЕНО: только vertical
+            .padding(vertical = 8.dp),
         contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(item.icon),
             contentDescription = item.label,
-            modifier = Modifier.size(32.dp),                 // ← ИЗМЕНЕНО: было 26.dp — крупнее
-            alpha = if (isSelected) 1f else 0.5f             // ← активная ярче, неактивная тусклее
+            modifier = Modifier.size(32.dp),
+            alpha = if (isSelected) 1f else 0.5f
         )
     }
 }

@@ -41,11 +41,9 @@ fun AddWeightDialog(
                 Text("Добавить замер", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.surface)
                 Spacer(Modifier.height(16.dp))
 
-                // Поле веса
                 DialogField(weight, { weight = it }, "Вес (кг)")
                 Spacer(Modifier.height(8.dp))
 
-                // Выбор даты (календарь)
                 Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(MaterialTheme.colorScheme.surface).clickable { showDatePicker = true }.padding(horizontal = 16.dp, vertical = 14.dp)) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         Text("Дата: ${selectedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}", fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)

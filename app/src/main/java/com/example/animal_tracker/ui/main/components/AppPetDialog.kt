@@ -45,8 +45,6 @@ fun AddPetDialog(
     var species by remember { mutableStateOf(petToEdit?.species ?: "cat") }
     var customSpecies by remember { mutableStateOf(if (petToEdit?.species != null && petToEdit.species !in listOf("cat", "dog", "rodent", "bird", "other")) petToEdit.species else "") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-
-    // Календарь для даты рождения
     var birthDay by remember { mutableStateOf(petToEdit?.birthDay?.let { try { LocalDate.parse(it) } catch(e: Exception){ null } }) }
     var showDatePicker by remember { mutableStateOf(false) }
 
@@ -69,7 +67,6 @@ fun AddPetDialog(
 
                 Spacer(Modifier.height(16.dp))
 
-                // Аватарка
                 val previewBitmap = if (selectedImageUri != null) rememberRemoteBitmap(selectedImageUri.toString()) else rememberRemoteBitmap(petToEdit?.photoUrl)
                 Box(
                     modifier = Modifier.size(96.dp).clip(CircleShape).background(Beige.copy(alpha = 0.35f)).clickable {
@@ -91,7 +88,6 @@ fun AddPetDialog(
                 DialogField(breed, { breed = it }, "Порода")
 
                 Spacer(Modifier.height(10.dp))
-                // Кнопка выбора даты рождения (Календарь)
                 Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(Beige.copy(alpha = 0.35f)).clickable { showDatePicker = true }.padding(horizontal = 14.dp, vertical = 12.dp)) {
                     Text(
                         text = if (birthDay != null) "Дата рождения: ${birthDay?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}" else "Дата рождения",
@@ -145,7 +141,6 @@ fun AddPetDialog(
         }
     }
 
-    // Окно календаря
     if (showDatePicker) {
         val state = rememberDatePickerState(initialSelectedDateMillis = birthDay?.atStartOfDay(ZoneOffset.UTC)?.toInstant()?.toEpochMilli())
         DatePickerDialog(

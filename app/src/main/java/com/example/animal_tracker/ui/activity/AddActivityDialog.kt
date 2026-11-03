@@ -24,7 +24,7 @@ fun AddActivityDialog(
     onDismiss: () -> Unit,
     onSave: (type: String, duration: Int, distance: Double?, repetitions: Int?, note: String?) -> Unit
 ) {
-    var selectedType by remember { mutableStateOf("walk") } // По умолчанию прогулка
+    var selectedType by remember { mutableStateOf("walk") }
     var expanded by remember { mutableStateOf(false) }
 
     var duration by remember { mutableStateOf("") }
@@ -38,7 +38,6 @@ fun AddActivityDialog(
                 Text("Добавить активность", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.surface)
                 Spacer(Modifier.height(16.dp))
 
-                // Выпадающий список
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Box(
                         modifier = Modifier
@@ -84,7 +83,6 @@ fun AddActivityDialog(
 
                 Spacer(Modifier.height(12.dp))
 
-                // Поля
                 DialogField(duration, { duration = it }, "Длительность (мин)")
 
                 if (selectedType == "walk") {

@@ -74,5 +74,5 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:storage-kt:3.0.0")
     implementation("io.ktor:ktor-client-android:3.0.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("androidx.compose.material3:material3:1.2.1") // или более новая
+    implementation("androidx.compose.material3:material3:1.2.1")
 }

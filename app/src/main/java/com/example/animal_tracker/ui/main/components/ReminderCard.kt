@@ -78,7 +78,7 @@ private fun ReminderRow(reminder: Reminder) {
         )
         Spacer(Modifier.width(12.dp))
         Text(
-            text = "$timeStr · ${reminder.title}", // Время и Название
+            text = "$timeStr · ${reminder.title}",
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface

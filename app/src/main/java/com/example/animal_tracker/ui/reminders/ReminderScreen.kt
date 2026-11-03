@@ -28,7 +28,7 @@ import java.util.Locale
 fun ReminderScreen(
     pet: Pet,
     reminders: List<Reminder>,
-    onBack: () -> Unit, // Больше не используется для аватарки, но оставим для стрелки, если нужно
+    onBack: () -> Unit,
     onToggle: (Int, Boolean) -> Unit,
     onAddClick: () -> Unit
 ) {
@@ -41,7 +41,6 @@ fun ReminderScreen(
     Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
         Spacer(Modifier.height(16.dp))
 
-        // Выбор даты (без стрелки назад и аватарки)
         Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface).padding(horizontal = 16.dp, vertical = 12.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                 Image(painter = painterResource(R.drawable.left), contentDescription = "Назад", modifier = Modifier.size(24.dp).clickable { currentDate = currentDate.minusDays(1) })
@@ -67,7 +66,6 @@ fun ReminderScreen(
                         Row(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(CalendarDay).padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(checked = rem.isDone, onCheckedChange = { onToggle(rem.id!!, it) }, colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.onSurface))
 
-                            // Формат: Время | Тип | Название
                             Text("$timeStr | ${rem.type} | ${rem.title}", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
                         }
                     }

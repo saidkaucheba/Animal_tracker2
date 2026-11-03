@@ -43,9 +43,8 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun AnimalTrackerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(), // Автоматически берет тему системы
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false, // Отключаем динамические цвета, чтобы сохранить бренд
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

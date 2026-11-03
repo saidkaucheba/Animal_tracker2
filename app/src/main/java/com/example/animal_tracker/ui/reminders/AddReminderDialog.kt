@@ -40,7 +40,6 @@ fun AddReminderDialog(
     var showTimePicker by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
 
-    // Логика формирования списка названий в зависимости от типа
     val titlesForType = when(type) {
         "Кормление" -> foods
         "Вакцинация" -> vaccines
@@ -50,7 +49,6 @@ fun AddReminderDialog(
         else -> emptyList()
     }
 
-    // Сброс выбранного названия при смене типа
     LaunchedEffect(type) { title = titlesForType.firstOrNull() ?: "" }
 
     Dialog(onDismissRequest = onDismiss) {
@@ -60,13 +58,11 @@ fun AddReminderDialog(
                 Text("Добавить напоминание", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.surface)
                 Spacer(Modifier.height(16.dp))
 
-                // 1. Выбор типа (Выпадающий список)
                 Box(modifier = Modifier.fillMaxWidth()) {
                     DropdownField(type, "Тип напоминания") { expandedType = true }
                     DropdownMenu(
                         expanded = expandedType,
                         onDismissRequest = { expandedType = false },
-                        // Задаем ширину 90% от ширины диалога, чтобы список не растягивался на весь экран и не улетал вбок
                         modifier = Modifier.fillMaxWidth(0.9f).background(MaterialTheme.colorScheme.surface).clip(RoundedCornerShape(16.dp))
                     ) {
                         listOf("Кормление", "Вакцинация", "Медикаменты", "Активность", "Вес").forEach {
@@ -77,7 +73,6 @@ fun AddReminderDialog(
 
                 Spacer(Modifier.height(8.dp))
 
-                // 2. Выбор названия (если есть из чего выбирать)
                 if (titlesForType.isNotEmpty() && type != "Вес") {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         DropdownField(if(title.isBlank()) "Выберите..." else title, "Название") { expandedTitle = true }
@@ -94,12 +89,10 @@ fun AddReminderDialog(
                     Spacer(Modifier.height(8.dp))
                 }
 
-                // 3. Выбор ДАТЫ (календарь)
                 DropdownField(date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")), "Дата напоминания") { showDatePicker = true }
 
                 Spacer(Modifier.height(8.dp))
 
-                // 4. Выбор ВРЕМЕНИ (часы)
                 DropdownField(time, "Время") { showTimePicker = true }
 
                 Spacer(Modifier.height(20.dp))
@@ -123,7 +116,6 @@ fun AddReminderDialog(
         }
     }
 
-    // Системный календарь для выбора даты
     if (showDatePicker) {
         val state = rememberDatePickerState(initialSelectedDateMillis = date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())
         DatePickerDialog(
@@ -133,7 +125,6 @@ fun AddReminderDialog(
         ) { DatePicker(state = state, colors = DatePickerDefaults.colors(containerColor = MaterialTheme.colorScheme.surface)) }
     }
 
-    // Системный циферблат для выбора времени
     if (showTimePicker) {
         val timeState = rememberTimePickerState(initialHour = time.take(2).toIntOrNull() ?: 12, initialMinute = time.takeLast(2).toIntOrNull() ?: 0, is24Hour = true)
         AlertDialog(
@@ -147,7 +138,6 @@ fun AddReminderDialog(
     }
 }
 
-// Универсальное поле с выпадающим списком (как на экране веса/справочника)
 @Composable
 fun DropdownField(value: String, label: String, onClick: () -> Unit) {
     Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(MaterialTheme.colorScheme.surface).clickable { onClick() }.padding(horizontal = 16.dp, vertical = 14.dp)) {

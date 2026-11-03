@@ -20,7 +20,7 @@ import com.example.animal_tracker.R
 fun TopBar(
     avatarUrl: String?,
     onMenuClick: () -> Unit,
-    showMenu: Boolean = true          // ← НОВЫЙ параметр
+    showMenu: Boolean = true
 ) {
     TopAppBar(
         title = {
@@ -32,7 +32,7 @@ fun TopBar(
             )
         },
         navigationIcon = {
-            if (showMenu) {            // ← ИЗМЕНЕНО: показываем только если true
+            if (showMenu) {
                 IconButton(onClick = onMenuClick) {
                     Image(
                         painter = painterResource(R.drawable.menu),
@@ -43,7 +43,6 @@ fun TopBar(
             }
         },
         actions = {
-            // ... аватар без изменений
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface,

@@ -41,22 +41,15 @@ fun ActivityScreen(
     onAddClick: () -> Unit
 ) {
     val oneWeekAgo = LocalDate.now().minusDays(7).atStartOfDay()
-
-    // 1. Все активности за последнюю неделю (для времени и дистанции)
     val weeklyActivities = activities.filter {
         try {
             LocalDate.parse(it.startedAt.take(10)).atStartOfDay() >= oneWeekAgo
         } catch (e: Exception) { false }
     }
 
-    // 2. Считаем "Всего прогулок" (строго тип walk)
     val totalWalks = weeklyActivities.count { it.type == "walk" }
-
-    // 3. Считаем ОБЩЕЕ время и ОБЩУЮ дистанцию
     val totalTime = weeklyActivities.sumOf { it.durationMin ?: 0 }
     val totalDistance = weeklyActivities.sumOf { it.distanceKm ?: 0.0 }
-
-    // 4. Всего активностей
     val totalActivities = weeklyActivities.size
 
     Column(
@@ -67,7 +60,6 @@ fun ActivityScreen(
     ) {
         Spacer(Modifier.height(16.dp))
 
-        // ─── Верхняя карточка ───
         Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface).padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
@@ -89,7 +81,6 @@ fun ActivityScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // ─── Заголовок ───
         Box(
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).padding(vertical = 14.dp),
             contentAlignment = Alignment.Center
@@ -99,7 +90,6 @@ fun ActivityScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        // ─── Сводка за неделю ───
         Box(
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface).padding(vertical = 12.dp),
             contentAlignment = Alignment.Center
@@ -109,7 +99,6 @@ fun ActivityScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        // ─── 4 Блока статистики ───
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             StatBlock(title = "Всего прогулок", value = totalWalks.toString(), modifier = Modifier.weight(1f))
             StatBlock(title = "Время (мин)", value = totalTime.toString(), modifier = Modifier.weight(1f))
@@ -122,12 +111,10 @@ fun ActivityScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // ─── График ───
         ActivityChart(activities = activities)
 
         Spacer(Modifier.height(16.dp))
 
-        // ─── Кнопка Добавить ───
         Button(
             onClick = onAddClick,
             shape = RoundedCornerShape(24.dp),
@@ -161,7 +148,6 @@ private fun StatBlock(title: String, value: String, modifier: Modifier = Modifie
 private fun ActivityChart(activities: List<ActivityLog>) {
     val context = LocalContext.current
 
-    // Подгружаем шрифт Forum из ресурсов
     val forumTypeface = remember {
         androidx.core.content.res.ResourcesCompat.getFont(context, R.font.forum_regular)
     }
@@ -172,7 +158,6 @@ private fun ActivityChart(activities: List<ActivityLog>) {
     val monthName = now.format(DateTimeFormatter.ofPattern("LLLL", Locale("ru"))).replaceFirstChar { it.uppercase() }
     val daysInMonth = now.lengthOfMonth()
 
-    // Группируем по неделям
     val weeks = listOf(1..7, 8..14, 15..21, 22..daysInMonth)
     val weeklyCounts = weeks.map { week ->
         activities.count { log ->
@@ -183,7 +168,6 @@ private fun ActivityChart(activities: List<ActivityLog>) {
         }
     }
 
-    // ФИКСИРОВАННЫЙ МАКСИМУМ 30
     val maxCount = 30
 
     Box(
@@ -204,20 +188,19 @@ private fun ActivityChart(activities: List<ActivityLog>) {
 
             Box(modifier = Modifier.fillMaxWidth().height(220.dp)) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
-                    // Настройки шрифта (Forum)
                     val textPaint = android.graphics.Paint().apply {
                         color = android.graphics.Color.parseColor("#3D2B1F")
                         textSize = 36f
                         textAlign = android.graphics.Paint.Align.CENTER
                         isAntiAlias = true
-                        typeface = forumTypeface // ПРИМЕНЯЕМ ШРИФТ
+                        typeface = forumTypeface
                     }
                     val axisPaint = android.graphics.Paint().apply {
                         color = android.graphics.Color.parseColor("#3D2B1F")
                         textSize = 32f
                         textAlign = android.graphics.Paint.Align.RIGHT
                         isAntiAlias = true
-                        typeface = forumTypeface // ПРИМЕНЯЕМ ШРИФТ
+                        typeface = forumTypeface
                     }
 
                     val leftPadding = 70.dp.toPx()
@@ -231,7 +214,6 @@ private fun ActivityChart(activities: List<ActivityLog>) {
                     drawLine(Color.DarkGray, Offset(leftPadding, topPadding), Offset(leftPadding, size.height - bottomPadding), strokeWidth = 4f)
                     drawLine(Color.DarkGray, Offset(leftPadding, size.height - bottomPadding), Offset(size.width, size.height - bottomPadding), strokeWidth = 4f)
 
-                    // Шкала Y (только 0, 10, 20, 30)
                     val steps = listOf(0, 10, 20, 30)
                     for (value in steps) {
                         val y = size.height - bottomPadding - (value.toFloat() / maxCount) * chartHeight
@@ -243,16 +225,13 @@ private fun ActivityChart(activities: List<ActivityLog>) {
                         drawContext.canvas.nativeCanvas.drawText("$value", leftPadding - 10.dp.toPx(), y + 10.dp.toPx(), axisPaint)
                     }
 
-                    // Подпись оси Y
                     drawContext.canvas.nativeCanvas.drawText("Кол-во", leftPadding - 10.dp.toPx(), topPadding - 10.dp.toPx(), axisPaint)
 
-                    // Столбцы
                     val barWidth = 50.dp.toPx()
                     val spacing = chartWidth / 4
 
                     weeklyCounts.forEachIndexed { index, count ->
                         val x = leftPadding + (index * spacing) + (spacing / 2)
-                        // Ограничиваем высоту, чтобы не вылезти за 30
                         val safeCount = if (count > maxCount) maxCount else count
                         val barHeight = (safeCount.toFloat() / maxCount) * chartHeight
                         val yTop = size.height - bottomPadding - barHeight
@@ -266,12 +245,10 @@ private fun ActivityChart(activities: List<ActivityLog>) {
                         if (count > 0) {
                             drawContext.canvas.nativeCanvas.drawText("$count", x, yTop - 15.dp.toPx(), textPaint)
                         }
-                        // Номер недели
                         drawContext.canvas.nativeCanvas.drawText("${index + 1}", x, size.height - 10.dp.toPx(), textPaint)
                     }
                 }
 
-                // Подпись оси X
                 Text(
                     text = "Недели",
                     style = MaterialTheme.typography.bodyMedium,

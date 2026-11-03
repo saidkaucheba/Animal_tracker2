@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import com.example.animal_tracker.data.SupabaseClient
 import io.github.jan.supabase.storage.storage
-import io.github.jan.supabase.storage.upload
 
 object PhotoUploader {
 
@@ -19,7 +18,6 @@ object PhotoUploader {
                 .openInputStream(uri)?.use { it.readBytes() }
                 ?: return null
 
-            // Путь для фото питомца: user_id/pet_id/photo.jpg
             val path = "$userId/$petId/photo.jpg"
 
             SupabaseClient.client.storage
@@ -29,7 +27,6 @@ object PhotoUploader {
                     contentType = io.ktor.http.ContentType.Image.JPEG
                 }
 
-            // Получаем публичную ссылку
             SupabaseClient.client.storage
                 .from("pet-files")
                 .publicUrl(path)
@@ -50,7 +47,6 @@ object PhotoUploader {
                 .openInputStream(uri)?.use { it.readBytes() }
                 ?: return null
 
-            // Путь для аватара: user_id/avatar.jpg
             val path = "$userId/avatar.jpg"
 
             SupabaseClient.client.storage

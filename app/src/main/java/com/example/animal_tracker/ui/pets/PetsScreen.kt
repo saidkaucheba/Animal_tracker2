@@ -39,7 +39,6 @@ fun PetsScreen(
     ) {
         Spacer(Modifier.height(16.dp))
 
-        // ─── Заголовок «Мои питомцы» ───
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -58,7 +57,6 @@ fun PetsScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // ─── Список питомцев ───
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -74,7 +72,6 @@ fun PetsScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // ─── Кнопка «Добавить питомца» ───
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -111,7 +108,6 @@ private fun PetListItem(
             .padding(16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            // Фото круглое
             val bitmap = rememberRemoteBitmap(pet.photoUrl)
             if (bitmap != null) {
                 Image(

@@ -52,7 +52,7 @@ fun ProfileScreen(
     ) { uri ->
         if (uri != null) {
             selectedAvatarUri = uri
-            onAvatarChange(uri) // Сразу отправляем в ViewModel для загрузки
+            onAvatarChange(uri)
         }
     }
 
@@ -62,7 +62,6 @@ fun ProfileScreen(
             .verticalScroll(rememberScrollState())
             .padding(top = 16.dp)
     ) {
-        // ─── Аватарка ───
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
@@ -74,7 +73,6 @@ fun ProfileScreen(
                     .size(160.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.surface)
-                    // Клик работает ТОЛЬКО если isEditing == true
                     .clickable(enabled = isEditing) {
                         avatarLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -101,7 +99,6 @@ fun ProfileScreen(
 
         Spacer(Modifier.height(24.dp))
 
-        // ─── Карточка с полями ───
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -132,7 +129,6 @@ fun ProfileScreen(
                 }
             }
 
-            // Имя
             Text(text = "Имя", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
             Spacer(Modifier.height(4.dp))
 
@@ -153,7 +149,6 @@ fun ProfileScreen(
             HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
             Spacer(Modifier.height(16.dp))
 
-            // Email
             Text(text = "Email", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
             Spacer(Modifier.height(4.dp))
 
@@ -215,7 +210,6 @@ fun ProfileScreen(
 
         Spacer(Modifier.height(24.dp))
 
-        // ─── Кнопка Выйти из профиля ───
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -239,7 +233,6 @@ fun ProfileScreen(
         Spacer(Modifier.height(24.dp))
     }
 
-    // ─── Диалоговое окно выхода ───
     if (showLogoutDialog) {
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },

@@ -78,7 +78,6 @@ class AuthViewModel : ViewModel() {
                 _state.value = AuthUiState(success = true)
                 showToast(context, "Успешный вход!")
             } catch (e: Exception) {
-                // Выводим конкретную ошибку (например, "Invalid login credentials")
                 val errorMsg = when {
                     e.message?.contains("Invalid login") == true -> "Неверный email или пароль"
                     e.message?.contains("Email not confirmed") == true -> "Email не подтвержден"
@@ -108,7 +107,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    // Вспомогательная функция для показа уведомлений
     private fun showToast(context: Context, message: String) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }

@@ -62,12 +62,10 @@ fun MainScreen(
 
     var selectedTab by remember { mutableStateOf("home") }
 
-    // Состояния для диалогов питомца
     var showAddDialog by remember { mutableStateOf(false) }
     var petToEdit by remember { mutableStateOf<Pet?>(null) }
     var petToDelete by remember { mutableStateOf<Pet?>(null) }
 
-    // Экраны
     var openPetProfile by remember { mutableStateOf<Pet?>(null) }
     var openWeightScreen by remember { mutableStateOf<Pet?>(null) }
     var openFeedingScreen by remember { mutableStateOf<Pet?>(null) }
@@ -76,14 +74,12 @@ fun MainScreen(
     var openHealthScreen by remember { mutableStateOf<Pet?>(null) }
     var openRemindersScreen by remember { mutableStateOf<Pet?>(null) }
 
-    // Диалоги для других экранов
     var showAddActivityDialog by remember { mutableStateOf(false) }
     var showAddVaccinationDialog by remember { mutableStateOf(false) }
     var vaccinationToEdit by remember { mutableStateOf<Vaccination?>(null) }
     var showAddMedicationDialog by remember { mutableStateOf(false) }
     var showAddReminderDialog by remember { mutableStateOf(false) }
 
-    // Загрузка данных
     LaunchedEffect(openWeightScreen?.id) { openWeightScreen?.let { viewModel.loadWeightLogs(it.id!!) } }
     LaunchedEffect(openFeedingScreen?.id) { openFeedingScreen?.let { viewModel.loadFoods(); viewModel.loadFeedingLogs(it.id!!, LocalDate.now().toString()) } }
     LaunchedEffect(openActivityScreen?.id) { openActivityScreen?.let { viewModel.loadActivityLogs(it.id!!) } }
@@ -126,7 +122,6 @@ fun MainScreen(
         ) { padding ->
             Box(modifier = Modifier.fillMaxSize().padding(padding)) {
                 when {
-                    // ─── Экран Напоминаний ───
                     openRemindersScreen != null -> {
                         val remPet = openRemindersScreen!!
                         ReminderScreen(
@@ -138,7 +133,6 @@ fun MainScreen(
                         )
                     }
 
-                    // ─── Экран Здоровья ───
                     openHealthScreen != null -> {
                         val healthPet = openHealthScreen!!
                         HealthScreen(
@@ -153,7 +147,6 @@ fun MainScreen(
                         )
                     }
 
-                    // ─── Экран Активности ───
                     openActivityScreen != null -> {
                         val actPet = openActivityScreen!!
                         ActivityScreen(
@@ -164,7 +157,6 @@ fun MainScreen(
                         )
                     }
 
-                    // ─── Экран Справочника ───
                     openFoodDirectory && openFeedingScreen != null -> {
                         val pet = openFeedingScreen!!
                         FoodDirectoryScreen(
@@ -176,7 +168,6 @@ fun MainScreen(
                         )
                     }
 
-                    // ─── Экран Кормления ───
                     openFeedingScreen != null -> {
                         val pet = openFeedingScreen!!
                         FeedingScreen(
@@ -191,7 +182,6 @@ fun MainScreen(
                         )
                     }
 
-                    // ─── Экран Веса ───
                     openWeightScreen != null -> {
                         val weightPet: Pet = openWeightScreen!!
                         WeightScreen(
@@ -203,7 +193,6 @@ fun MainScreen(
                         )
                     }
 
-                    // ─── Профиль питомца ───
                     openPetProfile != null -> {
                         val petProfile: Pet = openPetProfile!!
                         PetProfileScreen(
@@ -218,7 +207,6 @@ fun MainScreen(
                         )
                     }
 
-                    // ─── Вкладки ───
                     else -> {
                         when (selectedTab) {
                             "home" -> HomeTabContent(
@@ -260,7 +248,6 @@ fun MainScreen(
         }
     }
 
-    // ─── Диалоги ───
     if (showAddDialog) {
         AddPetDialog(
             petToEdit = petToEdit,
@@ -339,7 +326,6 @@ fun MainScreen(
     }
 }
 
-/* ─── Главный экран с графиком ─── */
 @Composable
 private fun HomeTabContent(
     state: MainUiState,
@@ -360,7 +346,7 @@ private fun HomeTabContent(
                 SectionDivider()
                 ReminderCard(reminders = state.reminders)
                 Spacer(Modifier.height(16.dp))
-                WeightSummaryChart(weightLogs = weightLogs) // ВОЗВРАЩЕНА ФУНКЦИЯ
+                WeightSummaryChart(weightLogs = weightLogs)
                 Spacer(Modifier.height(24.dp))
             }
         }

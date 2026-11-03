@@ -27,14 +27,13 @@ import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-// ─── ДИАЛОГ ВАКЦИНАЦИИ ───
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddVaccinationDialog(
     vaccinationToEdit: Vaccination? = null,
     onDismiss: () -> Unit,
     onSave: (name: String, dateGiven: String, nextDate: String?, vet: String?, clinic: String?) -> Unit,
-    onArchive: (() -> Unit)? = null // Коллбэк для удаления
+    onArchive: (() -> Unit)? = null
 ) {
     var name by remember { mutableStateOf(vaccinationToEdit?.vaccineName ?: "") }
     var vet by remember { mutableStateOf(vaccinationToEdit?.vetName ?: "") }
@@ -46,7 +45,6 @@ fun AddVaccinationDialog(
     var showDatePicker by remember { mutableStateOf(false) }
     var showNextDatePicker by remember { mutableStateOf(false) }
 
-    // Проверяем, изменил ли пользователь данные (только для режима редактирования)
     val isChanged = vaccinationToEdit == null || (
             name != (vaccinationToEdit.vaccineName) ||
                     vet != (vaccinationToEdit.vetName ?: "") ||
@@ -74,7 +72,6 @@ fun AddVaccinationDialog(
                 Spacer(Modifier.height(20.dp))
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    // Логика кнопок: Если редактируем и ничего не меняли — показываем "Удалить". Иначе "Отмена".
                     if (vaccinationToEdit != null && !isChanged && onArchive != null) {
                         Button(
                             onClick = onArchive,
@@ -117,7 +114,6 @@ fun AddVaccinationDialog(
     }
 }
 
-// ─── ДИАЛОГ МЕДИКАМЕНТОВ ───
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMedicationDialog(
@@ -129,14 +125,11 @@ fun AddMedicationDialog(
     var times by remember { mutableStateOf("Каждый день") }
     var customTimes by remember { mutableStateOf("") }
     var isCustomTimes by remember { mutableStateOf(false) }
-    var errorText by remember { mutableStateOf<String?>(null) } // Для ошибки валидации
-
+    var errorText by remember { mutableStateOf<String?>(null) }
     var expandedTimes by remember { mutableStateOf(false) }
-
     var time by remember { mutableStateOf("12:00") }
     var startDate by remember { mutableStateOf(LocalDate.now()) }
     var endDate by remember { mutableStateOf(LocalDate.now().plusDays(7)) }
-
     var showTimePicker by remember { mutableStateOf(false) }
     var showStartPicker by remember { mutableStateOf(false) }
     var showEndPicker by remember { mutableStateOf(false) }
@@ -149,7 +142,7 @@ fun AddMedicationDialog(
 
                 DialogField(name, { name = it }, "Название медикаментов")
                 Spacer(Modifier.height(8.dp))
-                DialogField(dosage, { dosage = it }, "Доза")
+                DialogField(dosage, { dosage = it }, "Дозировка")
 
                 Spacer(Modifier.height(8.dp))
                 Box(modifier = Modifier.fillMaxWidth()) {
@@ -190,7 +183,6 @@ fun AddMedicationDialog(
                     Spacer(Modifier.width(8.dp))
                     Button(
                         onClick = {
-                            // ВАЛИДАЦИЯ
                             if (isCustomTimes) {
                                 val num = customTimes.toIntOrNull()
                                 if (num == null || num < 1 || num > 31) {
@@ -211,7 +203,6 @@ fun AddMedicationDialog(
         }
     }
 
-    // Календари и время (код без изменений)
     if (showStartPicker) {
         val state = rememberDatePickerState(initialSelectedDateMillis = startDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())
         DatePickerDialog(
@@ -240,7 +231,6 @@ fun AddMedicationDialog(
     }
 }
 
-// Вспомогательные компоненты
 @Composable
 fun DialogField(value: String, onValueChange: (String) -> Unit, label: String) {
     Column(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surface.copy(alpha = 0.15f)).padding(horizontal = 14.dp, vertical = 8.dp)) {

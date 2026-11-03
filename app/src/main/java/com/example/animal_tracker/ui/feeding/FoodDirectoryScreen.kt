@@ -46,7 +46,6 @@ fun FoodDirectoryScreen(
     pet: Pet,
     foods: List<Food>,
     onBack: () -> Unit,
-    // ОБНОВЛЕНО: теперь принимает дату и время
     onAddToSchedule: (foodId: Int, time: String, date: String) -> Unit,
     onAddNewFood: (brand: String, name: String, calories: Double) -> Unit
 ) {
@@ -56,7 +55,6 @@ fun FoodDirectoryScreen(
     Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
         Spacer(Modifier.height(16.dp))
 
-        // ─── Верхняя карточка ───
         Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface).padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
@@ -78,14 +76,12 @@ fun FoodDirectoryScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // ─── Заголовок ───
         Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).padding(vertical = 14.dp), contentAlignment = Alignment.Center) {
             Text("Справочник", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.surface)
         }
 
         Spacer(Modifier.height(12.dp))
 
-        // ─── Ползунок ───
         Row(modifier = Modifier.fillMaxWidth().height(48.dp).clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.onSurface).padding(4.dp)) {
             listOf("Мои корма", "Добавить корм").forEachIndexed { index, title ->
                 val isSelected = selectedTab == index
@@ -102,7 +98,6 @@ fun FoodDirectoryScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        // ─── Подложка для контента (с закруглениями и отступами) ───
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -112,7 +107,6 @@ fun FoodDirectoryScreen(
                 .padding(12.dp)
         ) {
             if (selectedTab == 0) {
-                // Мои корма
                 if (foods.isEmpty()) {
                     Text("Справочник пуст", color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.align(Alignment.Center))
                 } else {
@@ -145,7 +139,6 @@ fun FoodDirectoryScreen(
                     }
                 }
             } else {
-                // Добавить корм
                 AddFoodForm(
                     onSave = { brand, name, calories ->
                         onAddNewFood(brand, name, calories)
@@ -155,10 +148,9 @@ fun FoodDirectoryScreen(
             }
         }
 
-        Spacer(Modifier.height(16.dp)) // Отступ от нижней навигации
+        Spacer(Modifier.height(16.dp))
     }
 
-    // ─── Окно добавления в расписание ───
     scheduleFoodItem?.let { foodObj ->
         AddToScheduleDialog(
             food = foodObj,
@@ -171,7 +163,6 @@ fun FoodDirectoryScreen(
     }
 }
 
-/* ─── Форма добавления корма ─── */
 @Composable
 private fun AddFoodForm(onSave: (String, String, Double) -> Unit) {
     var brand by remember { mutableStateOf("") }
@@ -214,7 +205,6 @@ private fun AddFoodForm(onSave: (String, String, Double) -> Unit) {
     }
 }
 
-/* ─── Поле ввода в стиле приложения ─── */
 @Composable
 private fun FormField(value: String, onValueChange: (String) -> Unit, label: String) {
     Column(
@@ -237,7 +227,6 @@ private fun FormField(value: String, onValueChange: (String) -> Unit, label: Str
     }
 }
 
-/* ─── Диалог добавления в расписание (с датой) ─── */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddToScheduleDialog(
@@ -245,11 +234,9 @@ private fun AddToScheduleDialog(
     onDismiss: () -> Unit,
     onSave: (date: String, time: String) -> Unit
 ) {
-    // Текущая выбранная дата и время
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var selectedTime by remember { mutableStateOf(LocalTime.of(12, 0)) }
 
-    // Состояния для показа окон выбора
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
 
@@ -259,7 +246,6 @@ private fun AddToScheduleDialog(
                 Text("Добавить в расписание", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.surface)
                 Spacer(Modifier.height(16.dp))
 
-                // ─── Кнопка выбора ДАТЫ ───
                 Button(
                     onClick = { showDatePicker = true },
                     shape = RoundedCornerShape(16.dp),
@@ -271,7 +257,6 @@ private fun AddToScheduleDialog(
 
                 Spacer(Modifier.height(12.dp))
 
-                // ─── Кнопка выбора ВРЕМЕНИ ───
                 Button(
                     onClick = { showTimePicker = true },
                     shape = RoundedCornerShape(16.dp),
@@ -283,13 +268,11 @@ private fun AddToScheduleDialog(
 
                 Spacer(Modifier.height(24.dp))
 
-                // ─── Кнопки управления ───
                 Row(Modifier.fillMaxWidth()) {
                     TextButton(onClick = onDismiss, modifier = Modifier.weight(1f)) { Text("Отмена", color = MaterialTheme.colorScheme.surface) }
                     Spacer(Modifier.width(8.dp))
                     Button(
                         onClick = {
-                            // Передаем отформатированные строки
                             val dateStr = selectedDate.toString() // "2026-10-24"
                             val timeStr = selectedTime.format(DateTimeFormatter.ofPattern("HH:mm")) // "12:00"
                             onSave(dateStr, timeStr)
@@ -305,7 +288,6 @@ private fun AddToScheduleDialog(
         }
     }
 
-    // ─── Всплывающее окно Календаря ───
     if (showDatePicker) {
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = selectedDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
@@ -323,7 +305,7 @@ private fun AddToScheduleDialog(
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) { Text("Отмена", color = MaterialTheme.colorScheme.onSurface) }
             },
-            colors = DatePickerDefaults.colors(containerColor = MaterialTheme.colorScheme.surface) // Делаем календарь в стиле приложения
+            colors = DatePickerDefaults.colors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             DatePicker(
                 state = datePickerState,
@@ -339,14 +321,12 @@ private fun AddToScheduleDialog(
         }
     }
 
-    // ─── Всплывающее окно Часов ───
     if (showTimePicker) {
         val timePickerState = rememberTimePickerState(
             initialHour = selectedTime.hour,
             initialMinute = selectedTime.minute,
             is24Hour = true
         )
-        // В Material3 нет стандартного TimePickerDialog, поэтому оборачиваем в AlertDialog
         AlertDialog(
             onDismissRequest = { showTimePicker = false },
             title = { Text("Выберите время", color = MaterialTheme.colorScheme.onSurface) },

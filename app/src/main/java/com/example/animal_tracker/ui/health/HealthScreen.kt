@@ -37,7 +37,7 @@ fun HealthScreen(
     onAddVaccinationClick: () -> Unit,
     onAddMedicationClick: () -> Unit,
     onEditVaccinationClick: (Vaccination) -> Unit,
-    onFinishMedication: (Int) -> Unit // Теперь называется так
+    onFinishMedication: (Int) -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(0) }
 
@@ -48,7 +48,6 @@ fun HealthScreen(
     ) {
         Spacer(Modifier.height(16.dp))
 
-        // Верхняя карточка
         Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface).padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
@@ -80,7 +79,6 @@ fun HealthScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        // Ползунок
         Row(modifier = Modifier.fillMaxWidth().height(48.dp).clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.onSurface).padding(4.dp)) {
             listOf("Вакцинация", "Медикаменты").forEachIndexed { index, title ->
                 val isSelected = selectedTab == index
@@ -97,9 +95,7 @@ fun HealthScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        // Контент
         if (selectedTab == 0) {
-            // ВАКЦИНАЦИИ
             Box(modifier = Modifier.fillMaxWidth().weight(1f).clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface).padding(16.dp)) {
                 if (vaccinations.isEmpty()) {
                     Text("Нет данных о вакцинациях", color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.align(Alignment.Center))
@@ -112,7 +108,6 @@ fun HealthScreen(
                             Column(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(CalendarDay).padding(12.dp)) {
                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                     Text(vac.vaccineName, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f))
-                                    // Только карандаш для редактирования/удаления
                                     Image(
                                         painter = painterResource(R.drawable.redakt),
                                         contentDescription = "Изменить",
@@ -138,7 +133,6 @@ fun HealthScreen(
                 }
             }
         } else {
-            // МЕДИКАМЕНТЫ
             Box(modifier = Modifier.fillMaxWidth().weight(1f).clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface).padding(16.dp)) {
                 if (medications.isEmpty()) {
                     Text("Нет активных курсов", color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.align(Alignment.Center))

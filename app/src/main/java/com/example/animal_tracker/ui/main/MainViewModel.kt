@@ -29,7 +29,7 @@ data class MainUiState(
     val pets: List<Pet> = emptyList(),
     val selectedPet: Pet? = null,
     val lastWeightKg: Double? = null,
-    val reminders: List<Reminder> = emptyList(), // Для главного экрана
+    val reminders: List<Reminder> = emptyList(),
     val error: String? = null
 )
 
@@ -44,11 +44,9 @@ class MainViewModel : ViewModel() {
     private val activityRepo = ActivityRepository()
     private val healthRepo = HealthRepository()
 
-    // Основной стейт
     private val _state = MutableStateFlow(MainUiState())
     val state: StateFlow<MainUiState> = _state
 
-    // Стейты для вложенных экранов
     private val _weightLogs = MutableStateFlow<List<WeightLog>>(emptyList())
     val weightLogs: StateFlow<List<WeightLog>> = _weightLogs
 
@@ -67,7 +65,6 @@ class MainViewModel : ViewModel() {
     private val _medications = MutableStateFlow<List<Medication>>(emptyList())
     val medications: StateFlow<List<Medication>> = _medications
 
-    // Стейт для всех напоминаний
     private val _allReminders = MutableStateFlow<List<Reminder>>(emptyList())
     val allReminders: StateFlow<List<Reminder>> = _allReminders
 
@@ -109,10 +106,8 @@ class MainViewModel : ViewModel() {
             try {
                 val weight = petRepo.getLastWeight(petId)
 
-                // Берем ВСЕ напоминания, чтобы они не пропадали
                 val allRem = reminderRepo.getByPet(petId)
 
-                // Фильтруем для главного экрана (только сегодняшние и невыполненные)
                 val todayRem = allRem.filter {
                     try {
                         LocalDate.parse(it.remindAt.take(10)) == LocalDate.now() && !it.isDone
@@ -120,12 +115,11 @@ class MainViewModel : ViewModel() {
                 }
 
                 _state.value = _state.value.copy(lastWeightKg = weight?.weightKg, reminders = todayRem)
-                _allReminders.value = allRem // Передаем ВСЕ напоминания для вкладки
+                _allReminders.value = allRem
             } catch (e: Exception) { e.printStackTrace() }
         }
     }
 
-    // ═══════════ НАПОМИНАНИЯ ═══════════
     fun loadReminders(petId: Int) {
         viewModelScope.launch {
             try {
@@ -141,7 +135,6 @@ class MainViewModel : ViewModel() {
                 val reminder = Reminder(petId = petId, type = type, title = title, remindAt = isoDate)
                 reminderRepo.add(reminder)
 
-                // Планирование уведомления
                 val dateTime = LocalDateTime.parse("${dateStr}T${timeStr}:00")
                 val millis = dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
                 scheduleNotification(context, millis, reminder.hashCode(), title)
@@ -190,7 +183,6 @@ class MainViewModel : ViewModel() {
         alarmManager.cancel(pendingIntent)
     }
 
-    // ═══════════ ПИТОМЦЫ ═══════════
     fun addPet(name: String, breed: String, birthDay: String, gender: String, species: String, photoUri: Uri?, context: Context) {
         viewModelScope.launch {
             try {
@@ -199,7 +191,6 @@ class MainViewModel : ViewModel() {
                 val created = petRepo.addPetAndReturn(newPet)
                 val petId = created.id ?: return@launch
 
-                // Внутри updatePet, где мы загружаем фото:
                 if (photoUri != null) {
                     val url = PhotoUploader.uploadPetPhoto(context, user.authId, petId, photoUri)
                     if (url != null) {
@@ -219,7 +210,6 @@ class MainViewModel : ViewModel() {
             try {
                 val user = _state.value.user ?: return@launch
 
-                // 1. Обновляем текстовые данные
                 SupabaseClient.client.from("Pet").update({
                     set("Name", name)
                     set("Species", species)
@@ -228,8 +218,6 @@ class MainViewModel : ViewModel() {
                     set("Gender", gender)
                 }) { filter { eq("id", petId) } }
 
-                // 2. Если выбрано НОВОЕ фото
-                // Внутри updatePet, где мы загружаем фото:
                 if (photoUri != null) {
                     val url = PhotoUploader.uploadPetPhoto(context, user.authId, petId, photoUri)
                     if (url != null) {
@@ -239,7 +227,7 @@ class MainViewModel : ViewModel() {
                         }
                     }
                 }
-                load() // Перезагружаем
+                load()
             } catch (e: Exception) { e.printStackTrace() }
         }
     }
@@ -253,7 +241,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // ═══════════ ВЕС ═══════════
     fun loadWeightLogs(petId: Int) {
         viewModelScope.launch {
             try { _weightLogs.value = weightRepo.getByPet(petId) } catch (e: Exception) { e.printStackTrace() }
@@ -281,7 +268,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // ═══════════ КОРМЛЕНИЕ ═══════════
     fun loadFoods() {
         viewModelScope.launch {
             try {
@@ -346,7 +332,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // ═══════════ АКТИВНОСТЬ ═══════════
     fun loadActivityLogs(petId: Int) {
         viewModelScope.launch {
             try { _activityLogs.value = activityRepo.getByPet(petId) } catch (e: Exception) { e.printStackTrace() }
@@ -363,7 +348,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // ═══════════ ЗДОРОВЬЕ ═══════════
     fun loadHealthData(petId: Int) {
         viewModelScope.launch {
             try {
@@ -418,14 +402,12 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // ═══════════ ПОЛЬЗОВАТЕЛЬ ═══════════
     fun updateAvatar(context: Context, uri: Uri) {
         viewModelScope.launch {
             try {
                 val user = _state.value.user ?: return@launch
                 val url = PhotoUploader.uploadAvatar(context, user.authId, uri) ?: return@launch
 
-                // ДОБАВЛЯЕМ ВРЕМЯ К ССЫЛКЕ (сбрасывает кэш)
                 val newUrlWithCacheBuster = "$url?t=${System.currentTimeMillis()}"
 
                 SupabaseClient.client.from("User").update({ set("Avatar_url", newUrlWithCacheBuster) }) {

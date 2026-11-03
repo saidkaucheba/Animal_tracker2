@@ -7,7 +7,6 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Order
 
 class HealthRepository {
-    // Вакцинации
     suspend fun getVaccinations(petId: Int): List<Vaccination> {
         return SupabaseClient.client.from("Vaccination")
             .select {
@@ -20,7 +19,6 @@ class HealthRepository {
         SupabaseClient.client.from("Vaccination").insert(vac)
     }
 
-    // Медикаменты
     suspend fun getMedications(petId: Int): List<Medication> {
         return SupabaseClient.client.from("Medication")
             .select {
@@ -32,15 +30,12 @@ class HealthRepository {
         SupabaseClient.client.from("Medication").insert(med)
     }
 
-    // Архивируем вакцинацию (вместо удаления)
-    // Удаляем вакцинацию навсегда
     suspend fun deleteVaccination(id: Int) {
         SupabaseClient.client.from("Vaccination").delete {
             filter { eq("id", id) }
         }
     }
 
-    // Обновляем вакцинацию
     suspend fun updateVaccination(
         id: Int,
         name: String,

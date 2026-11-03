@@ -55,7 +55,7 @@ fun PetDrawer(
                     isSelected = pet.id == selectedPet?.id,
                     onClick = { onPetSelected(pet) }
                 )
-                Spacer(Modifier.height(10.dp))     // ← ИЗМЕНЕНО: было 8.dp — больше воздуха
+                Spacer(Modifier.height(10.dp))
             }
         }
     }
@@ -73,10 +73,10 @@ private fun PetDrawerItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))        // ← ИЗМЕНЕНО: было 16.dp — более округлые карточки
+            .clip(RoundedCornerShape(24.dp))
             .background(bg)
             .clickable { onClick() }
-            .padding(horizontal = 14.dp, vertical = 12.dp),  // ← ИЗМЕНЕНО: было 12/10 — крупнее
+            .padding(horizontal = 14.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         val bitmap = rememberRemoteBitmap(pet.photoUrl)
@@ -87,7 +87,7 @@ private fun PetDrawerItem(
                 contentDescription = pet.name,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(48.dp)                    // ← ИЗМЕНЕНО: было 44.dp
+                    .size(48.dp)
                     .clip(CircleShape)
             )
         } else {
@@ -101,7 +101,7 @@ private fun PetDrawerItem(
             )
         }
 
-        Spacer(Modifier.width(14.dp))               // ← ИЗМЕНЕНО: было 12.dp
+        Spacer(Modifier.width(14.dp))
 
         Text(
             text = pet.name,

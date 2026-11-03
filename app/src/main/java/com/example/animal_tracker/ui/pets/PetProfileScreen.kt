@@ -46,7 +46,6 @@ fun PetProfileScreen(
     ) {
         Spacer(Modifier.height(16.dp))
 
-        // ─── Верхняя карточка (назад + редактировать) ───
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -78,7 +77,6 @@ fun PetProfileScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // ─── Основная карточка с информацией ───
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -90,7 +88,6 @@ fun PetProfileScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Круглое фото
                 val bitmap = rememberRemoteBitmap(pet.photoUrl)
                 if (bitmap != null) {
                     Image(
@@ -114,7 +111,6 @@ fun PetProfileScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                // Имя
                 Text(
                     text = pet.name,
                     style = MaterialTheme.typography.titleLarge,
@@ -127,7 +123,6 @@ fun PetProfileScreen(
                 HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
                 Spacer(Modifier.height(16.dp))
 
-                // Информация
                 InfoRow(label = "Порода",  value = pet.breed ?: "—")
                 InfoRow(label = "Возраст", value = calculateAge(pet.birthDay))
                 InfoRow(label = "Вес",     value = lastWeightKg?.let { "%.1f кг".format(it) } ?: "—")
@@ -138,7 +133,6 @@ fun PetProfileScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // ─── 4 квадратные кнопки ───
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)

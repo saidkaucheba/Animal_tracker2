@@ -47,7 +47,6 @@ fun FeedingScreen(
 
     LaunchedEffect(currentDate) { onDateChange(currentDate.toString()) }
 
-    // Функция для правильного перевода времени из UTC в местное
     fun parseTime(isoString: String): String {
         return try {
             val offsetDateTime = java.time.OffsetDateTime.parse(isoString)
@@ -61,7 +60,6 @@ fun FeedingScreen(
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp)) {
         Spacer(Modifier.height(16.dp))
 
-        // Верхняя карточка
         Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface).padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(painter = painterResource(R.drawable.nazad), contentDescription = "Назад", modifier = Modifier.size(28.dp).clickable { onBack() })
@@ -76,14 +74,12 @@ fun FeedingScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // Заголовок
         Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).padding(vertical = 14.dp), contentAlignment = Alignment.Center) {
             Text("Питание питомца", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Cream)
         }
 
         Spacer(Modifier.height(12.dp))
 
-        // Выбор даты
         Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface).padding(horizontal = 16.dp, vertical = 12.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                 Image(painter = painterResource(R.drawable.left), contentDescription = "Назад", modifier = Modifier.size(24.dp).clickable { currentDate = currentDate.minusDays(1) })
@@ -94,7 +90,6 @@ fun FeedingScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        // Список кормлений
         Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surface).padding(12.dp)) {
             if (feedingLogs.isEmpty()) {
                 Text("Нет записей за этот день", color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.align(Alignment.Center))
@@ -103,7 +98,7 @@ fun FeedingScreen(
                     feedingLogs.forEach { log ->
                         val food = foods.find { it.id == log.foodId }
                         val kcal = ((food?.caloriesPer100g ?: 0.0) * log.amountG / 100.0).toInt()
-                        val time = parseTime(log.fedAt) // ИСПОЛЬЗУЕМ НОВУЮ ФУНКЦИЮ
+                        val time = parseTime(log.fedAt)
 
                         Row(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(CalendarDay).padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                             Text(time, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
@@ -123,7 +118,6 @@ fun FeedingScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // Кнопка Справочник
         Button(onClick = onOpenDirectory, shape = RoundedCornerShape(24.dp), colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface, contentColor = MaterialTheme.colorScheme.onSurface), modifier = Modifier.fillMaxWidth().height(52.dp)) {
             Text("Справочник кормов", fontWeight = FontWeight.Bold)
         }
@@ -131,11 +125,9 @@ fun FeedingScreen(
         Spacer(Modifier.height(24.dp))
     }
 
-    // ─── Диалог редактирования ───
     editLog?.let { logItem ->
         val food = foods.find { it.id == logItem.foodId }
         var amount by remember { mutableStateOf(logItem.amountG.toInt().toString()) }
-        // Берем время из базы с учетом часового пояса
         var time by remember { mutableStateOf(parseTime(logItem.fedAt)) }
         var showTimePicker by remember { mutableStateOf(false) }
 
@@ -145,7 +137,6 @@ fun FeedingScreen(
                     Text("Редактирование кормления", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.surface)
                     Spacer(Modifier.height(16.dp))
 
-                    // Кнопка выбора времени
                     Box(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(MaterialTheme.colorScheme.surface).clickable { showTimePicker = true }.padding(16.dp)) {
                         Text("Время: $time", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium)
                     }
@@ -171,7 +162,6 @@ fun FeedingScreen(
                             onClick = {
                                 val a = amount.toDoubleOrNull()
                                 if (a != null) {
-                                    // Передаем время БЕЗ изменений, чтобы не сбить часовой пояс
                                     onUpdateFeeding(logItem.id!!, a, time, currentDate.toString())
                                     editLog = null
                                 }

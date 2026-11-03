@@ -5,7 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape          // ← ИЗМЕНЕНО: круглая аватарка
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,18 +36,17 @@ fun PetCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(top = 24.dp, bottom = 8.dp)   // ← ИЗМЕНЕНО: top = 24.dp — ниже от header
-            .clip(RoundedCornerShape(24.dp))       // ← ИЗМЕНЕНО: было 20.dp — стало 24.dp
+            .padding(top = 24.dp, bottom = 8.dp)
+            .clip(RoundedCornerShape(24.dp))
             .background(MaterialTheme.colorScheme.surface)
             .combinedClickable(
                 onClick = {},
                 onLongClick = onLongClick
             )
-            .padding(20.dp)                        // ← ИЗМЕНЕНО: было 16.dp — карточка крупнее
+            .padding(20.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
 
-            // Фото питомца
             val bitmap = rememberRemoteBitmap(pet.photoUrl)
             if (bitmap != null) {
                 Image(
@@ -55,8 +54,8 @@ fun PetCard(
                     contentDescription = pet.name,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(96.dp)                   // ← ИЗМЕНЕНО: было 84.dp — крупнее
-                        .clip(CircleShape)             // ← ИЗМЕНЕНО: круглая аватарка
+                        .size(96.dp)
+                        .clip(CircleShape)
                 )
             } else {
                 Image(
@@ -69,9 +68,8 @@ fun PetCard(
                 )
             }
 
-            Spacer(Modifier.width(20.dp))              // ← ИЗМЕНЕНО: было 16.dp
+            Spacer(Modifier.width(20.dp))
 
-            // Информация
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = pet.name,
